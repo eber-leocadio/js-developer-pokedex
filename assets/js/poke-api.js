@@ -12,7 +12,32 @@ function convertPokeApiDetailToPokemon(pokeDetail) {
     pokemon.types = types
     pokemon.type = type
 
-    pokemon.photo = pokeDetail.sprites.other.dream_world.front_default
+    // pokemon.photo = pokeDetail.sprites.other.dream_world.front_default
+  // pokemon.photo = pokeDetail.sprites.other.showdown.front_default;
+  pokemon.photo = pokeDetail.sprites.other.home.front_default;
+
+    return pokemon
+}
+
+function converCardPokemon(pokeDetail) {
+    const pokemon = new Pokemon()
+    pokemon.number = pokeDetail.id
+    pokemon.name = pokeDetail.name
+
+    const types = pokeDetail.types.map((typeSlot) => typeSlot.type.name)
+    const [type] = types
+  
+  pokeDetail.stats.map((st) => {
+    st.name = st.stat.name;
+    st.value = st.base_stat;
+  });
+
+  pokemon.status = pokeDetail.stats;
+
+    pokemon.types = types
+    pokemon.type = type
+
+    pokemon.photo = pokeDetail.sprites.other.showdown.front_default;
 
     return pokemon
 }
@@ -33,3 +58,13 @@ pokeApi.getPokemons = (offset = 0, limit = 5) => {
         .then((detailRequests) => Promise.all(detailRequests))
         .then((pokemonsDetails) => pokemonsDetails)
 }
+
+pokeApi.getPokemonCard = (pokemon) => {
+  debugger
+  const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`
+  return fetch(url)
+      .then((response) => response.json())
+      .then(converCardPokemon)
+}
+
+
